@@ -183,7 +183,12 @@ async function run() {
       const result = await SelectedClass.insertOne(user);
       res.send(result);
     })
-
+    app.get('/selectedClass/:email', async(req, res)=>{
+      const email = req.params.email
+      const query = {instructorEmail:email};
+      const result = await SelectedClass.find(query).toArray();
+      res.send(result);
+    })
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
