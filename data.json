@@ -1,0 +1,59 @@
+[
+    {
+      "className": "Guitar Basics",
+      "image": "https://i.postimg.cc/FFnnpVb0/gitter-2.jpg",
+      "instructorName": "John Smith",
+      "availableSeats": 10,
+      "price": 99.99
+    },
+    {
+      "className": "Piano Intermediate",
+      "image": "https://i.postimg.cc/Pq4SwWrp/piano-3.jpg",
+      "instructorName": "Jane Johnson",
+      "availableSeats": 8,
+      "price": 149.99
+    },
+    {
+      "className": "Drum Lessons",
+      "image": "https://i.postimg.cc/MG8LRZ74/dram-1.jpg",
+      "instructorName": "Mike Davis",
+      "availableSeats": 6,
+      "price": 79.99
+    },
+    {
+      "className": "Vocal Training",
+      "image": "https://i.postimg.cc/6pGsn1D7/vocal-2.jpg",
+      "instructorName": "Emily Brown",
+      "availableSeats": 12,
+      "price": 119.99
+    },
+    {
+      "className": "Violin Basics",
+      "image": "https://i.postimg.cc/3Jq5yHb5/violin-2.webp",
+      "instructorName": "David Wilson",
+      "availableSeats": 10,
+      "price": 99.99
+    },
+    {
+      "className": "Bass Guitar",
+      "image": "https://i.postimg.cc/0j3WN95V/other-1.jpg",
+      "instructorName": "Sarah Johnson",
+      "availableSeats": 15,
+      "price": 89.99
+    },
+    {
+      "className": "Saxophone Lessons",
+      "image": "https://i.postimg.cc/sgW8vGh7/Saxophone-1.jpg",
+      "instructorName": "Robert Taylor",
+      "availableSeats": 8,
+      "price": 149.99
+    },
+    {
+      "className": "Saxophone Lessons",
+      "image": "https://i.postimg.cc/sgW8vGh7/Saxophone-1.jpg",
+      "instructorName": "Robert Taylor",
+      "availableSeats": 8,
+      "price": 149.99
+    }
+  ]
+  
