@@ -185,6 +185,7 @@ async function run() {
     })
     app.get('/selectedClass/:email', async(req, res)=>{
       const email = req.params.email
+      console.log(email);
       const query = {instructorEmail:email};
       const result = await SelectedClass.find(query).toArray();
       res.send(result);
