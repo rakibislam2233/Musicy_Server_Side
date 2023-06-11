@@ -67,6 +67,7 @@ async function run() {
     })
     app.put('/users/:email',async(req,res)=>{
       const email = req.params.email;
+      console.log(email);
       const userInfo = req.body;
       const query = {email:email}
       const options = {upsert:true}
@@ -125,7 +126,7 @@ async function run() {
       res.send(result)
     })
     //instructors related api
-    app.get('/instructors',async(req,res) => {
+    app.get('/instructors',verifyJwt,async(req,res) => {
         const result = await InstructorCollection.find().toArray();
         res.send(result);
     })
@@ -167,12 +168,12 @@ async function run() {
       const result = await ClassCollection.updateOne(query,updataDoc,options);
       res.send(result)
     })
-    app.get('/class',async(req,res)=>{
+    app.get('/class',verifyJwt,verifyAdmin,async(req,res)=>{
       const result = await ClassCollection.find().toArray()
       res.send(result)
     })
     //classCollection
-    app.get('/approvedClass',async(req,res)=>{
+    app.get('/approvedClass',verifyJwt,async(req,res)=>{
       const query = {status:'approved'}
       const result = await ClassCollection.find(query).toArray();
       res.send(result)
