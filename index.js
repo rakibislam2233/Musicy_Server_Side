@@ -213,10 +213,20 @@ async function run() {
       })
     })  
     // enrollled class infomantion save database
-    app.post('/payments', verifyJwt, async (req, res) => {
+    app.post('/payments',async (req, res) => {
       const payment = req.body;
       const insertResult = await PaymentCollection.insertOne(payment);
-      res.send({ insertResult});
+      const query = { _id: new ObjectId(payment.classId) }
+      const deleteResult = await SelectedClass.deleteOne(query)
+      const query1 =  { _id: new ObjectId(payment.selectedId) }
+      const updataDoc = {
+        $set:{
+          availableSeats:`${payment.availableSeats-1}`,
+          enrolled: 1
+        }
+      }
+      const updateResult = await ClassCollection.updateOne(query1,updataDoc)
+      res.send({ insertResult,deleteResult,updateResult});
     })
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
