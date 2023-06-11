@@ -44,6 +44,7 @@ async function run() {
     const ClassCollection = client.db('MusicyDb').collection('Class')
     const UserCollection = client.db('MusicyDb').collection('users')
     const SelectedClass = client.db('MusicyDb').collection('selectedClass')
+    const PaymentCollection = client.db('MusicyDb').collection('payment')
     //verify isAdmin midleware
     const verifyAdmin = async (req,res,next) => {
       const decodedEmail = req.decoded.email;
@@ -179,7 +180,7 @@ async function run() {
       res.send(result)
     })
     /************** Student dashboard APi ***************************/
-    app.post('/selectedClass',async(req,res)=>{
+    app.post('/selectedClassData',async(req,res)=>{
       const user = req.body;
       const result = await SelectedClass.insertOne(user);
       res.send(result);
@@ -187,24 +188,36 @@ async function run() {
     app.get('/selectedClass/:email', async(req, res)=>{
       const email = req.params.email
       console.log(email);
-      const query = {instructorEmail:email};
+      const query = {userEmail:email};
       const result = await SelectedClass.find(query).toArray();
+      res.send(result);
+    })
+    app.delete('/deletedClass/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = {_id:new ObjectId(id)};
+      const result = await SelectedClass.deleteOne(query);
       res.send(result);
     })
     /*************** Payment releted api ***********************/
     app.post('/create-payment-intent',verifyJwt, async (req, res) => {
       const { price } = req.body;
       const amount = parseInt(price * 100);
+      console.log(price,amount);
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'usd',
         payment_method_types: ['card']
       });
-
       res.send({
         clientSecret: paymentIntent.client_secret
       })
     })  
+    // enrollled class infomantion save database
+    app.post('/payments', verifyJwt, async (req, res) => {
+      const payment = req.body;
+      const insertResult = await PaymentCollection.insertOne(payment);
+      res.send({ insertResult});
+    })
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
