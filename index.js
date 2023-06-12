@@ -39,7 +39,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const InstructorCollection = client.db('MusicyDb').collection('Instructors')
     const ClassCollection = client.db('MusicyDb').collection('Class')
     const UserCollection = client.db('MusicyDb').collection('users')
@@ -102,17 +102,17 @@ async function run() {
       const result = {admin:user?.role==='admin'}
       res.send(result)
     })
-    app.patch('/instructor/:id',async(req,res)=>{
-      const id = req.params.id;
-      console.log(id);
-      const query = {_id:new ObjectId(id)};
+    app.post('/instructor',async(req,res)=>{
+      const user = req.body;
+      const postInstructor = await InstructorCollection.insertOne(user);
+      const query = {_id:new ObjectId(user._id)};
       const updateDoc = {
         $set:{
           role:"instructor",
         }
       }
       const result = await UserCollection.updateOne(query,updateDoc)
-      res.send(result)
+      res.send({result,postInstructor})
       
     })
     app.get('/instructor/:email',verifyJwt,async(req,res)=>{
@@ -127,7 +127,7 @@ async function run() {
       res.send(result)
     })
     //instructors related api
-    app.get('/instructors',verifyJwt,async(req,res) => {
+    app.get('/instructors',async(req,res) => {
         const result = await InstructorCollection.find().toArray();
         res.send(result);
     })
@@ -173,8 +173,13 @@ async function run() {
       const result = await ClassCollection.find().toArray()
       res.send(result)
     })
+    //popular classes collection
+    app.get('/popularClasses',async(req,res)=>{
+      const result = await ClassCollection.find().sort({enrolled:1} ).toArray();
+      res.send(result)
+    })
     //classCollection
-    app.get('/approvedClass',verifyJwt,async(req,res)=>{
+    app.get('/approvedClass',async(req,res)=>{
       const query = {status:'approved'}
       const result = await ClassCollection.find(query).toArray();
       res.send(result)
@@ -215,6 +220,7 @@ async function run() {
     // enrollled class infomantion save database
     app.post('/payments',async (req, res) => {
       const payment = req.body;
+      console.log(payment);
       const insertResult = await PaymentCollection.insertOne(payment);
       const query = { _id: new ObjectId(payment.classId) }
       const deleteResult = await SelectedClass.deleteOne(query)
@@ -225,11 +231,12 @@ async function run() {
       );
       res.send({ insertResult,deleteResult,result});
     })
+
     app.get('/enrolledClass/:email',async(req,res)=>{
       const email = req.params.email;
       console.log(email);
       const query = {userEmail: email}
-      const result = await PaymentCollection.find(query).toArray();
+      const result = await PaymentCollection.find(query).sort({ date : -1 } ).toArray();
       res.send(result)
     } )
     await client.db("admin").command({ ping: 1 });
