@@ -179,7 +179,7 @@ async function run() {
       const result = await ClassCollection.find(query).toArray();
       res.send(result)
     })
-    /************** Student dashboard APi ***************************/
+    /************** Student dashboard related APi ******************/
     app.post('/selectedClassData',async(req,res)=>{
       const user = req.body;
       const result = await SelectedClass.insertOne(user);
@@ -218,16 +218,20 @@ async function run() {
       const insertResult = await PaymentCollection.insertOne(payment);
       const query = { _id: new ObjectId(payment.classId) }
       const deleteResult = await SelectedClass.deleteOne(query)
-      const query1 =  { _id: new ObjectId(payment.selectedId) }
-      const updataDoc = {
-        $set:{
-          availableSeats:`${payment.availableSeats-1}`,
-          enrolled: 1
-        }
-      }
-      const updateResult = await ClassCollection.updateOne(query1,updataDoc)
-      res.send({ insertResult,deleteResult,updateResult});
+      const result = await ClassCollection.findOneAndUpdate(
+        { _id: new ObjectId(payment.selectedId) },
+        { $inc: { availableSeats: -1, enrolled: 1 } },
+        { returnOriginal: false }
+      );
+      res.send({ insertResult,deleteResult,result});
     })
+    app.get('/enrolledClass/:email',async(req,res)=>{
+      const email = req.params.email;
+      console.log(email);
+      const query = {userEmail: email}
+      const result = await PaymentCollection.find(query).toArray();
+      res.send(result)
+    } )
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
